@@ -2,7 +2,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
-public class MainPage{
+public class MainPage extends BaseClass{
     private By user_menu_css=By.cssSelector(".header2-menu__item-wrapper__username");
     private WebDriver driver;
     private Actions action;
@@ -14,7 +14,7 @@ public class MainPage{
         //переход в личный кабинет
         action =new Actions(driver);
         action.moveToElement(driver.findElement(user_menu_css)).build().perform();
-        driver.findElement(By.linkText("Личный кабинет")).click();
+        click(By.linkText("Личный кабинет"));
         return this;
     }
     public AboutYourself aboutYourself(){

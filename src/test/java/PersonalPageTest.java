@@ -1,36 +1,44 @@
+import com.google.common.io.Files;
+import io.qameta.allure.Attachment;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import static org.hamcrest.CoreMatchers.is;
+import io.qameta.allure.Step;
+
+import java.io.IOException;
+
+public class PersonalPageTest extends BaseClass{
+    private static final String name="Иван";
+    private static final String last_name="Иванов";
+    private static final String name_lat="Ivan";
+    private static final String last_name_lat="Ivanov";
+    private static final String data_birth="01.12.1995";
+    private static final String country="Россия";
+    private static final String city="Самара";
+    private static final String english="Начальный уровень (Beginner)";
+    private static final String contact_vk_value="https://vk.com/";
+    private static final String contact_vk="VK";
+    private static final String contact_ok_value="https://ok.ru/";
+    private static final String contact_ok="OK";
+    private static final String company="OAO ИТ";
+    private static final String post="QA";
+    private static final String gender_set="f";
+    private static final String gender_get="Женский";
 
 
-public class TestClass extends BaseClass{
-    private String name="Иван";
-    private String last_name="Иванов";
-    private String name_lat="Ivan";
-    private String last_name_lat="Ivanov";
-    private String data_birth="01.12.1995";
-    private String country="Россия";
-    private String city="Самара";
-    private String english="Начальный уровень (Beginner)";
-    private String contact_vk_value="https://vk.com/";
-    private String contact_vk="VK";
-    private String contact_ok_value="https://ok.ru/";
-    private String contact_ok="OK";
-    private String company="OAO ИТ";
-    private String post="QA";
-    private String gender_set="f";
-    private String gender_get="Женский";
 
-    @Test
-    public void test(){
+    public void test() throws IOException {
         setPersonalData();//ввод данных
         setDown();
         setUp();
         getPersonalData();//проверка введенных данных
-    }
+        screen();
 
-    private void setPersonalData() {
-        AboutYourself aboutYourself=new Authorization(driver).auth(cfg.login(),cfg.passwors())
+    }
+    @Step("Заполнения данных О себе авторизированного пользователя")
+    @Test
+    public void setPersonalData() throws IOException {
+        AboutYourself aboutYourself=new AuthorizationPage(driver).auth(cfg.login(),cfg.passwors())
         .personalAccount().aboutYourself();
         logger.info("Вход и Переход на вкладку О себе");
         logger.info("Заполнение данных о себе и сохранение");
@@ -53,10 +61,12 @@ public class TestClass extends BaseClass{
         logger.info("Данные о себе заполнены");
         aboutYourself.save();
         logger.info("Изменения сохранены");
+        screen();
     }
-
-    private void getPersonalData(){
-        AboutYourself aboutYourself=new Authorization(driver)
+    @Step("Проверка заполненных данных О себе авторизированного пользователя")
+    @Test
+    public void getPersonalData() throws IOException {
+        AboutYourself aboutYourself=new AuthorizationPage(driver)
                 .auth(cfg.login(),cfg.passwors())
                 .personalAccount()
                 .aboutYourself();
@@ -82,6 +92,12 @@ public class TestClass extends BaseClass{
         collector.checkThat(aboutYourself.getComppany(),is(company));//проверка компании
         collector.checkThat(aboutYourself.getPost(),is(post));//проверка должности
         logger.info("Данные проверены");
+        screen();
+    }
+
+    @Attachment
+    public byte[] screen() throws IOException {
+        return Files.toByteArray(takeScreen());
     }
 
     @Rule
